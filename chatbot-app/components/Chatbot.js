@@ -1,46 +1,72 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import axios from 'axios';
 
 const Chatbot = () => {
-        const [input, setInput] = useState("");
         const [messages, setMessages] = useState([]);
+        const [inputValue, setInputValue] = useState('');
+        const [isTyping, setIsTyping] = useState(false); // Added state for typing indicator
 
-        const handleMessageSubmit = async(event) => {
-            event.preventDefault();
-            setMessages([...messages, { text: input, sender: "user" }]);
-            setInput("");
+        const handleMessageSend = async() => {
+            if (inputValue) {
+                setMessages([...messages, { text: inputValue, isUserMessage: true }]);
+                setInputValue('');
+                setIsTyping(true); // Show typing indicator when user sends message
 
-            try {
-                const response = await axios.post("/chat", { input });
-                setMessages([...messages, { text: response.data, sender: "bot" }]);
-            } catch (error) {
-                console.error(error);
+                try {
+                    const response = await axios.post('/chat', {
+                        message: inputValue,
+                    });
+
+                    const botMessage = response.data.message;
+                    setMessages([...messages, { text: botMessage, isUserMessage: false }]);
+                } catch (error) {
+                    console.error(error);
+                }
+
+                setIsTyping(false); // Hide typing indicator after bot responds
             }
         };
 
         const handleInputChange = (event) => {
-            setInput(event.target.value);
+            setInputValue(event.target.value);
         };
 
-        return ( < div >
-                <
-                div > {
-                    messages.map((message, index) => ( <
-                        div key = { index } >
-                        <
-                        div > { message.sender } < /div{">"} <
-                        div > { message.text } < /div{">"} < /
-                        div { ">" }
-                    )) { "}" } <
-                    /div{">"} <
-                    form onSubmit = { handleMessageSubmit } >
-                    <
-                    input value = { input }
-                    onChange = { handleInputChange }
-                    /> <
-                    button type = "submit" > Send < /button{">"} < /
-                    form { ">" } <
-                    /div{">"}
-                ); { "}" };
+        const handleKeyPress = (event) => {
+            if (event.key === 'Enter') {
+                handleMessageSend();
+            }
+        };
 
-                export default Chatbot;
+        return ( <
+            div className = "chatbot-container" >
+            <
+            div className = "chatbot-message-container" > {
+                messages.map((message, index) => ( <
+                    div key = { index }
+                    className = { `chatbot-message ${message.isUserMessage ? 'user' : 'bot'}` } >
+                    { message.text } <
+                    /div>
+                ))
+            } {
+                isTyping && < div className = "chatbot-typing-indicator" > Typing... < /div>} {/ * Typing indicator * /} <
+                    /div> <
+                    div className = "chatbot-input-container" >
+                    <
+                    input
+                className = "chatbot-input"
+                type = "text"
+                placeholder = "Type your message here..."
+                value = { inputValue }
+                onChange = { handleInputChange }
+                onKeyPress = { handleKeyPress }
+                /> <
+                button className = "chatbot-send-button"
+                onClick = { handleMessageSend } >
+                    Send <
+                    /button> <
+                    /div> <
+                    /div>
+            );
+        };
+
+        export default Chatbot;
