@@ -37,19 +37,16 @@ const Chatbot = () => {
             }
         };
 
-        return ( <
-            div className = "chatbot-container" >
-            <
-            div className = "chatbot-message-container" > {
+        return ( <div className = "chatbot-container" >
+            <div className = "chatbot-message-container" > {
                 messages.map((message, index) => ( <
                     div key = { index }
                     className = { `chatbot-message ${message.isUserMessage ? 'user' : 'bot'}` } >
-                    { message.text } <
-                    /div>
+                    { message.text } </div>
                 ))
             } {
-                isTyping && < div className = "chatbot-typing-indicator" > Typing... < /div>} {/ * Typing indicator * /} <
-                    /div> <
+                isTyping && < div className = "chatbot-typing-indicator" > Typing... </div>} {/ * Typing indicator * /} 
+                </div> <
                     div className = "chatbot-input-container" >
                     <
                     input
@@ -59,13 +56,12 @@ const Chatbot = () => {
                 value = { inputValue }
                 onChange = { handleInputChange }
                 onKeyPress = { handleKeyPress }
-                /> <
-                button className = "chatbot-send-button"
+                /> <button className = "chatbot-send-button"
                 onClick = { handleMessageSend } >
-                    Send <
-                    /button> <
-                    /div> <
-                    /div>
+                    Send 
+                    </button> 
+                    </div> 
+                </div>
             );
         };
 
